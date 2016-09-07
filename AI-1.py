@@ -1,5 +1,6 @@
 
 from graphics import *
+from random import *
 
 class AChaos(object):
     
@@ -107,6 +108,7 @@ class AChaos(object):
             
     #---------------------Drops the ball into side A---------------------------------    
     def DropIntoSideA(self):
+        Fallen = False
         for tube in self.SideA:
             for ball in range(len(tube)-2):
                 if tube[-3] == 0 and tube[ball] !=0:
@@ -120,6 +122,7 @@ class AChaos(object):
                                                  if True!=isinstance( x, int )), None) #http://stackoverflow.com/questions/19502378/python-find-first-instance-of-non-zero-number-in-list
                                 if nextBall == None:
                                     break
+                                Fallen = True
                                 tube[i] = self.SideB[tube[-1]-1][nextBall]
                                 self.SideB[tube[-1]-1][nextBall] = 0
         for tube in self.SideB:
@@ -129,10 +132,12 @@ class AChaos(object):
                         tube.pop(0)
                         tube.insert(-2,0)
                     break
+        return Fallen
                 
                     
    #---------------------Drops the ball into side B---------------------------------
     def DropIntoSideB(self):
+        Fallen = False
         for tube in self.SideB:
             for ball in range(len(tube)-2):
                 if tube[-3] == 0 and tube[ball] !=0:
@@ -147,6 +152,7 @@ class AChaos(object):
                                                  if True !=isinstance( x, int )), None) #http://stackoverflow.com/questions/19502378/python-find-first-instance-of-non-zero-number-in-list
                                 if nextBall == None:
                                     break
+                                Fallen = True
                                 tube[i] = self.SideA[tube[-1]-1][nextBall]
                                 self.SideA[tube[-1]-1][nextBall] = 0
         for tube in self.SideA:
@@ -156,6 +162,7 @@ class AChaos(object):
                         tube.pop(0)
                         tube.insert(-2,0)
                     break
+        return Fallen
                     
                                 
     def rotateC(self):
@@ -229,7 +236,80 @@ class AChaos(object):
                     tube[-2] = 1
                 else:
                     tube[-2]+=1                 
-            self.DropIntoSideA()            
+            self.DropIntoSideA()
+            
+    def isFlat(self):
+        if self.orentation == True:
+            for tube in self.SideB:
+                if tube[-3]==0 and tube[0] ==0:
+                    flat =True
+                else:
+                    return False
+            return True
+        else:
+            for tube in self.SideA:
+                if tube[-3]==0 and tube[0] ==0:
+                    flat =True
+                else:
+                    return False
+            return True
+    def Randomize(self):
+        i = 0
+        lastChoice = 4;
+        k = 20
+        while i < 10:
+            choice = randint(0,2)
+            while choice == 0 and lastChoice ==0:
+                choice = randint(0,2)
+            if choice == 0 and i+2 != k:
+                self.flip()
+                print("Flip")
+                i+=1
+            elif choice == 1:
+                while self.rotateC() == False and self.isFlat() == False:
+                    print("RotateC")
+                    i+=1
+                print("RotateC")
+                i+=1  
+            else:
+                while self.rotateCC() == False and self.isFlat() == False:
+                    print("RotateCC")
+                    i+=1
+                print("RotateCC")
+                i+=1        
+    def InversePuzzle(self,k):
+        self.Randomize()
+        self.Print()
+        lastChoice = 4
+        i = 0
+        while i < k:
+            #self.Print()
+            choice = randint(0,2)
+            while choice == 0 and lastChoice ==0:
+                choice = randint(0,2)
+            if choice == 0 and i+2 != k:
+                self.flip()
+                print("Flip")
+                i+=1
+                lastChoice = 0
+            elif choice == 1:
+                while self.rotateC() == False and self.isFlat() == False:
+                    print("RotateC")
+                    i+=1
+                print("RotateC")
+                i+=1
+                lastChoice = 1;
+            else:
+                while self.rotateCC() == False and self.isFlat() == False:
+                    print("RotateCC")
+                    i+=1
+                print("RotateCC")
+                i+=1
+                lastChoice = 2
+        if i+1 != k:
+            self.InversePuzzle(k)
+            
+        
         
         
 def main():
@@ -237,25 +317,28 @@ def main():
     
     puzzle = AChaos()
     puzzle.Print()
-    print()
-    puzzle.rotateC()
-    puzzle.Print()
-    print()
-    puzzle.flip()
+    puzzle.InversePuzzle(5)
     puzzle.Print()
     print()    
-    puzzle.rotateCC()
-    puzzle.Print()
-    print()    
-    puzzle.flip()
-    puzzle.Print()
-    print()
-    puzzle.rotateC()
-    puzzle.Print()
-    print()
-    puzzle.rotateCC()
-    puzzle.Print()
-    print()    
+    #print()
+    #puzzle.rotateC()
+    #puzzle.Print()
+    #print()
+    #puzzle.flip()
+    #puzzle.Print()
+    #print()    
+    #puzzle.rotateCC()
+    #puzzle.Print()
+    #print()    
+    #puzzle.flip()
+    #puzzle.Print()
+    #print()
+    #puzzle.rotateC()
+    #puzzle.Print()
+    #print()
+    #puzzle.rotateCC()
+    #puzzle.Print()
+    #print()    
     puzzle.win.getMouse()
     puzzle.win.close()    
             
